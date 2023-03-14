@@ -43,25 +43,25 @@ const manageEmployment = function () {
           viewAllEmployees();
           break;
         case "Add Employee":
-          console.log("switch done 2");
+          console.log("Add Employee");
           break;
         case "Update Employee Role":
-          console.log("switch done 3");
+          console.log("Update Employee Role");
           break;
         case "View All Roles":
           viewAllRoles();
           break;
         case "Add Role":
-          console.log("switch done 5");
+          console.log("Add Role");
           break;
         case "View All Departments":
           viewAllDepartments();
           break;
         case "Add Department":
-          console.log("switch done 7");
+          console.log("Add Department");
           break;
         case "Quit":
-          console.log("switch done 8");
+          console.log("Quit");
       }
     })
     .catch((error) => {
