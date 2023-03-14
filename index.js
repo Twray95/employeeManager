@@ -1,6 +1,21 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
+const {
+  viewAllEmployees,
+  viewAllDepartments,
+  viewAllRoles,
+} = require("./SQL_Functions/view");
+
+// const db = mysql.createConnection(
+//   {
+//     host: "127.0.0.1",
+//     user: "root",
+//     password: "",
+//     database: "employment_db",
+//   },
+//   console.log(`Connected to the employment_db database.`)
+// );
 
 const manageEmployment = function () {
   inquirer
@@ -25,7 +40,7 @@ const manageEmployment = function () {
       const response = answer.listChoice;
       switch (response) {
         case "View All Employees":
-          console.log("switch done 1");
+          viewAllEmployees();
           break;
         case "Add Employee":
           console.log("switch done 2");
@@ -34,13 +49,13 @@ const manageEmployment = function () {
           console.log("switch done 3");
           break;
         case "View All Roles":
-          console.log("switch done 4");
+          viewAllRoles();
           break;
         case "Add Role":
           console.log("switch done 5");
           break;
         case "View All Departments":
-          console.log("switch done 6");
+          viewAllDepartments();
           break;
         case "Add Department":
           console.log("switch done 7");
@@ -55,3 +70,5 @@ const manageEmployment = function () {
 };
 
 manageEmployment();
+
+module.exports = { manageEmployment };
