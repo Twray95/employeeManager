@@ -6,6 +6,7 @@ const {
   viewAllDepartments,
   viewAllRoles,
 } = require("./SQL_Functions/view");
+const { addEmployeeFunction } = require("./SQL_Functions/add");
 
 // const db = mysql.createConnection(
 //   {
@@ -16,7 +17,6 @@ const {
 //   },
 //   console.log(`Connected to the employment_db database.`)
 // );
-
 const manageEmployment = function () {
   inquirer
     .prompt([
@@ -40,28 +40,29 @@ const manageEmployment = function () {
       const response = answer.listChoice;
       switch (response) {
         case "View All Employees":
-          viewAllEmployees();
+          viewAllEmployees(manageEmployment);
           break;
         case "Add Employee":
-          console.log("Add Employee");
+          addEmployeeFunction(manageEmployment);
           break;
         case "Update Employee Role":
           console.log("Update Employee Role");
           break;
         case "View All Roles":
-          viewAllRoles();
+          viewAllRoles(manageEmployment);
           break;
         case "Add Role":
           console.log("Add Role");
           break;
         case "View All Departments":
-          viewAllDepartments();
+          viewAllDepartments(manageEmployment);
           break;
         case "Add Department":
           console.log("Add Department");
           break;
         case "Quit":
-          console.log("Quit");
+          quit();
+          break;
       }
     })
     .catch((error) => {
@@ -69,6 +70,9 @@ const manageEmployment = function () {
     });
 };
 
-manageEmployment();
+const quit = function () {
+  console.log("quit");
+  return process.exit();
+};
 
-module.exports = { manageEmployment };
+manageEmployment();

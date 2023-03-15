@@ -1,7 +1,6 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const cTable = require("console.table");
-const { manageEmployment } = require("../index");
 
 const db = mysql.createConnection(
   {
@@ -13,27 +12,25 @@ const db = mysql.createConnection(
   console.log(`Connected to the employment_db database.`)
 );
 
-const viewAllEmployees = function () {
+const viewAllEmployees = function (cb) {
   db.query("SELECT * FROM employee", function (err, results) {
     console.table(results);
+    cb();
   });
-  //   manageEmployment();
 };
 
-const viewAllDepartments = function () {
+const viewAllDepartments = function (cb) {
   db.query("SELECT * FROM department", function (err, results) {
     console.table(results);
+    cb();
   });
-  //   manageEmployment();
 };
 
-const viewAllRoles = function () {
+const viewAllRoles = function (cb) {
   db.query("SELECT * FROM role", function (err, results) {
     console.table(results);
+    cb();
   });
-  //   manageEmployment();
 };
-
-// viewAllEmployees();
 
 module.exports = { viewAllEmployees, viewAllDepartments, viewAllRoles };
