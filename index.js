@@ -7,7 +7,8 @@ const {
 } = require("./SQL_Functions/view");
 const {
   addEmployeeFunction,
-  addDepartmentFunction,
+  addDepartment,
+  addRoleFunction,
 } = require("./SQL_Functions/add");
 
 const db = mysql.createConnection(
@@ -43,7 +44,7 @@ const manageEmployment = function () {
       const response = answer.listChoice;
       switch (response) {
         case "View All Employees":
-          viewAllEmployees(db);
+          viewAllEmployees(db, manageEmployment);
           break;
         case "Add Employee":
           addEmployeeFunction(db);
@@ -55,13 +56,13 @@ const manageEmployment = function () {
           viewAllRoles(db, manageEmployment);
           break;
         case "Add Role":
-          console.log("Add Role");
+          addRoleFunction(db);
           break;
         case "View All Departments":
           viewAllDepartments(db, manageEmployment);
           break;
         case "Add Department":
-          addDepartmentFunction(db);
+          addDepartment(db);
           break;
         case "Quit":
           quit();

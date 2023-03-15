@@ -1,16 +1,6 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
 
-// const db = mysql.createConnection(
-//   {
-//     host: "127.0.0.1",
-//     user: "root",
-//     password: "",
-//     database: "employment_db",
-//   },
-//   console.log(`Connected to the employment_db database.`)
-// );
-
 const positions = function (db, cb) {
   db.promise()
     .query("SELECT title as name, id as value FROM role;")
@@ -20,8 +10,16 @@ const positions = function (db, cb) {
           'SELECT CONCAT(first_name, " ", last_name) as name, id as value FROM employee WHERE manager_id IS NULL;'
         )
         .then(function (managerResults) {
-          cb(roleResults[0], managerResults[0]);
+          cb(db, roleResults[0], managerResults[0]);
         });
+    });
+};
+
+const departmentList = function (db, cb) {
+  db.promise()
+    .query("SELECT name, id as value FROM department;")
+    .then(function (depoList) {
+      cb(db, depoList[0]);
     });
 };
 
@@ -34,9 +32,9 @@ const addDepartment = function (db) {
         message: "What is the name of the new department?",
       },
     ])
-    .then((answers) =>
+    .then((response) => {
       db.query(
-        `INSERT INTO department (name) VALUES ("${answers.name}")`,
+        `INSERT INTO department (name) VALUES ("${response.name}")`,
         function (err, results) {
           if (err) {
             console.log(err);
@@ -44,12 +42,40 @@ const addDepartment = function (db) {
             console.log(results);
           }
         }
-      )
-    );
-  // .catch((error) => console.log(error));
+      );
+    });
 };
 
-const addEmployee = function (roles, manager) {
+const addRole = function (db, departments) {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "department_id",
+        message: "What department are you adding a role too?",
+        choices: departments,
+      },
+      {
+        type: "input",
+        name: "title",
+        message: "What is the role title?",
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What is the role salary?",
+      },
+    ])
+    .then((responses) => {
+      db.query(
+        `INSERT INTO role (title, salary, department_id) VALUES ("${
+          responses.title
+        }", ${Number(responses.salary)}, ${responses.department_id})`
+      );
+    });
+};
+
+const addEmployee = function (db, roles, manager) {
   inquirer
     .prompt([
       {
@@ -86,12 +112,12 @@ const addEmployee = function (roles, manager) {
     });
 };
 
-const addEmployeeFunction = function () {
+const addEmployeeFunction = function (db) {
   positions(db, addEmployee);
 };
 
-const addDepartmentFunction = function () {
-  addDepartment(db);
+const addRoleFunction = function (db) {
+  departmentList(db, addRole);
 };
 
-module.exports = { addEmployeeFunction, addDepartmentFunction };
+module.exports = { addEmployeeFunction, addDepartment, addRoleFunction };
