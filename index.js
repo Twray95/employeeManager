@@ -10,6 +10,7 @@ const {
   addDepartment,
   addRoleFunction,
 } = require("./SQL_Functions/add");
+const { roleUpdate } = require("./SQL_Functions/update");
 
 const db = mysql.createConnection(
   {
@@ -50,7 +51,7 @@ const manageEmployment = function () {
           addEmployeeFunction(db);
           break;
         case "Update Employee Role":
-          console.log("Update Employee Role");
+          roleUpdate(db);
           break;
         case "View All Roles":
           viewAllRoles(db, manageEmployment);
