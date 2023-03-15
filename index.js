@@ -1,22 +1,25 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const cTable = require("console.table");
 const {
   viewAllEmployees,
   viewAllDepartments,
   viewAllRoles,
 } = require("./SQL_Functions/view");
-const { addEmployeeFunction } = require("./SQL_Functions/add");
+const {
+  addEmployeeFunction,
+  addDepartmentFunction,
+} = require("./SQL_Functions/add");
 
-// const db = mysql.createConnection(
-//   {
-//     host: "127.0.0.1",
-//     user: "root",
-//     password: "",
-//     database: "employment_db",
-//   },
-//   console.log(`Connected to the employment_db database.`)
-// );
+const db = mysql.createConnection(
+  {
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+    database: "employment_db",
+  },
+  console.log(`Connected to the employment_db database.`)
+);
+
 const manageEmployment = function () {
   inquirer
     .prompt([
@@ -40,25 +43,25 @@ const manageEmployment = function () {
       const response = answer.listChoice;
       switch (response) {
         case "View All Employees":
-          viewAllEmployees(manageEmployment);
+          viewAllEmployees(db);
           break;
         case "Add Employee":
-          addEmployeeFunction(manageEmployment);
+          addEmployeeFunction(db);
           break;
         case "Update Employee Role":
           console.log("Update Employee Role");
           break;
         case "View All Roles":
-          viewAllRoles(manageEmployment);
+          viewAllRoles(db, manageEmployment);
           break;
         case "Add Role":
           console.log("Add Role");
           break;
         case "View All Departments":
-          viewAllDepartments(manageEmployment);
+          viewAllDepartments(db, manageEmployment);
           break;
         case "Add Department":
-          console.log("Add Department");
+          addDepartmentFunction(db);
           break;
         case "Quit":
           quit();

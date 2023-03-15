@@ -1,18 +1,17 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
-const cTable = require("console.table");
 
-const db = mysql.createConnection(
-  {
-    host: "127.0.0.1",
-    user: "root",
-    password: "",
-    database: "employment_db",
-  },
-  console.log(`Connected to the employment_db database.`)
-);
+// const db = mysql.createConnection(
+//   {
+//     host: "127.0.0.1",
+//     user: "root",
+//     password: "",
+//     database: "employment_db",
+//   },
+//   console.log(`Connected to the employment_db database.`)
+// );
 
-const positions = function (cb) {
+const positions = function (db, cb) {
   db.promise()
     .query("SELECT title as name, id as value FROM role;")
     .then(function (roleResults) {
@@ -24,6 +23,30 @@ const positions = function (cb) {
           cb(roleResults[0], managerResults[0]);
         });
     });
+};
+
+const addDepartment = function (db) {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "name",
+        message: "What is the name of the new department?",
+      },
+    ])
+    .then((answers) =>
+      db.query(
+        `INSERT INTO department (name) VALUES ("${answers.name}")`,
+        function (err, results) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(results);
+          }
+        }
+      )
+    );
+  // .catch((error) => console.log(error));
 };
 
 const addEmployee = function (roles, manager) {
@@ -64,7 +87,11 @@ const addEmployee = function (roles, manager) {
 };
 
 const addEmployeeFunction = function () {
-  positions(addEmployee);
+  positions(db, addEmployee);
 };
 
-module.exports = { addEmployeeFunction };
+const addDepartmentFunction = function () {
+  addDepartment(db);
+};
+
+module.exports = { addEmployeeFunction, addDepartmentFunction };
