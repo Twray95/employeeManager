@@ -48,22 +48,22 @@ const manageEmployment = function () {
           viewAllEmployees(db, manageEmployment);
           break;
         case "Add Employee":
-          addEmployeeFunction(db);
+          addEmployeeFunction(db, manageEmployment);
           break;
         case "Update Employee Role":
-          roleUpdate(db);
+          roleUpdate(db, manageEmployment);
           break;
         case "View All Roles":
           viewAllRoles(db, manageEmployment);
           break;
         case "Add Role":
-          addRoleFunction(db);
+          addRoleFunction(db, manageEmployment);
           break;
         case "View All Departments":
           viewAllDepartments(db, manageEmployment);
           break;
         case "Add Department":
-          addDepartment(db);
+          addDepartment(db, manageEmployment);
           break;
         case "Quit":
           quit();

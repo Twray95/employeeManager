@@ -18,7 +18,7 @@ const db = mysql.createConnection(
 // inquirer which role to change to
 // .then query UPDATE employee SET role_id = 'answers.role_id' WHERE employee_id = answers.employee_id
 
-const updateEmployeeRole = function (db, cb) {
+const updateEmployeeRole = function (db, cb, cb1) {
   db.promise()
     .query(
       "SELECT CONCAT(first_name, ' ', last_name) as name, id as value FROM employee"
@@ -27,12 +27,12 @@ const updateEmployeeRole = function (db, cb) {
       db.promise()
         .query("SELECT title as name, id as value FROM role")
         .then(function (roleResults) {
-          cb(db, employeeResults[0], roleResults[0]);
+          cb(db, employeeResults[0], roleResults[0], cb1);
         });
     });
 };
 
-const inquireRoleUpdate = function (db, employeeList, roleList) {
+const inquireRoleUpdate = function (db, employeeList, roleList, cb) {
   inquirer
     .prompt([
       {
@@ -52,14 +52,17 @@ const inquireRoleUpdate = function (db, employeeList, roleList) {
       db.query(
         `UPDATE employee SET role_id = ${Number(
           answers.newRole
-        )} WHERE id = ${Number(answers.employeeName)}`
+        )} WHERE id = ${Number(answers.employeeName)}`,
+        function () {
+          cb();
+        }
       );
     });
 };
 // .then query UPDATE employee SET role_id = 'answers.role_id' WHERE employee_id = answers.employee_id
 
-const roleUpdate = function (db) {
-  updateEmployeeRole(db, inquireRoleUpdate);
+const roleUpdate = function (db, cb) {
+  updateEmployeeRole(db, inquireRoleUpdate, cb);
 };
 
 module.exports = { roleUpdate };

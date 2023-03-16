@@ -1,7 +1,6 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
 
-const positions = function (db, cb) {
+const positions = function (db, cb, cb1) {
   db.promise()
     .query("SELECT title as name, id as value FROM role;")
     .then(function (roleResults) {
@@ -10,20 +9,20 @@ const positions = function (db, cb) {
           'SELECT CONCAT(first_name, " ", last_name) as name, id as value FROM employee WHERE manager_id IS NULL;'
         )
         .then(function (managerResults) {
-          cb(db, roleResults[0], managerResults[0]);
+          cb(db, roleResults[0], managerResults[0], cb1);
         });
     });
 };
 
-const departmentList = function (db, cb) {
+const departmentList = function (db, cb, cb1) {
   db.promise()
     .query("SELECT name, id as value FROM department;")
     .then(function (depoList) {
-      cb(db, depoList[0]);
+      cb(db, depoList[0], cb1);
     });
 };
 
-const addDepartment = function (db) {
+const addDepartment = function (db, cb) {
   inquirer
     .prompt([
       {
@@ -35,18 +34,14 @@ const addDepartment = function (db) {
     .then((response) => {
       db.query(
         `INSERT INTO department (name) VALUES ("${response.name}")`,
-        function (err, results) {
-          if (err) {
-            console.log(err);
-          } else {
-            console.log(results);
-          }
+        function () {
+          cb();
         }
       );
     });
 };
 
-const addRole = function (db, departments) {
+const addRole = function (db, departments, cb) {
   inquirer
     .prompt([
       {
@@ -70,12 +65,15 @@ const addRole = function (db, departments) {
       db.query(
         `INSERT INTO role (title, salary, department_id) VALUES ("${
           responses.title
-        }", ${Number(responses.salary)}, ${responses.department_id})`
+        }", ${Number(responses.salary)}, ${responses.department_id})`,
+        function () {
+          cb();
+        }
       );
     });
 };
 
-const addEmployee = function (db, roles, manager) {
+const addEmployee = function (db, roles, manager, cb) {
   inquirer
     .prompt([
       {
@@ -105,19 +103,19 @@ const addEmployee = function (db, roles, manager) {
       console.log(answers);
       db.query(
         `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answers.first_name}", "${answers.last_name}", ${answers.role_id}, ${answers.manager_id});`,
-        function (err, results) {
-          console.log(results);
+        function () {
+          cb();
         }
       );
     });
 };
 
-const addEmployeeFunction = function (db) {
-  positions(db, addEmployee);
+const addEmployeeFunction = function (db, cb) {
+  positions(db, addEmployee, cb);
 };
 
-const addRoleFunction = function (db) {
-  departmentList(db, addRole);
+const addRoleFunction = function (db, cb) {
+  departmentList(db, addRole, cb);
 };
 
 module.exports = { addEmployeeFunction, addDepartment, addRoleFunction };
